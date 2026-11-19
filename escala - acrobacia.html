@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Escala de Apresentações — SDN na Floresta Encantada (v3.0)</title>
+<style>
+  :root {
+    --bg: #f4f6f4;
+    --surface: #ffffff;
+    --surface-2: #f8faf8;
+    --border: #dfe5df;
+    --text: #1b261d;
+    --text-muted: #556658;
+    --forest: #1e4d2b;
+    --forest-light: #e8f2eb;
+    --macaco-bg: #fef7ec;
+    --macaco-border: #e5b869;
+    --macaco-accent: #9a5b13;
+    --sapo-bg: #eef8f0;
+    --sapo-border: #76b885;
+    --sapo-accent: #1f6e33;
+    --tatu-bg: #f4f1ee;
+    --tatu-border: #b39c88;
+    --tatu-accent: #5e4532;
+    --onca-bg: #fff5eb;
+    --onca-border: #e08d4f;
+    --onca-accent: #9c4212;
+    --link-bg: #e7f0ff;
+    --link-text: #1849a9;
+    --vaga-bg: #f9fafb;
+    --vaga-text: #667085;
+    --shadow: 0 2px 10px rgba(20, 40, 25, 0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    padding-bottom: 48px;
+  }
+
+  header {
+    background: linear-gradient(135deg, #163a20 0%, #245c34 100%);
+    color: #fff;
+    padding: 28px 20px 24px;
+    border-bottom: 4px solid #d49b35;
+  }
+  .container {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  .header-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .badge-version {
+    display: inline-block;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: #d6e6da;
+    font-size: 0.94rem;
+    margin-top: 4px;
+  }
+  .btn-print {
+    background: #ffffff;
+    color: var(--forest);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 15px;
+    font-weight: 600;
+    font-size: 0.86rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.12s ease;
+  }
+  .btn-print:hover { transform: translateY(-1px); }
+
+  /* KPI Strip */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .kpi-card {
+    background: rgba(255,255,255,0.11);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .kpi-val {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .kpi-lbl {
+    font-size: 0.8rem;
+    color: #d7e8dc;
+    margin-top: 2px;
+  }
+
+  /* Business Rules Banner */
+  .rules-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-top: 18px;
+    box-shadow: var(--shadow);
+  }
+  .rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .rules-header h2 {
+    font-size: 0.98rem;
+    color: var(--forest);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .rule-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.83rem;
+  }
+  .rule-box strong {
+    display: block;
+    color: var(--forest);
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+  .rule-box ul {
+    padding-left: 16px;
+    color: var(--text-muted);
+  }
+  .rule-box li { margin-bottom: 2px; }
+
+  /* Controls */
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  select, input[type="text"] {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 11px;
+    font-size: 0.86rem;
+    color: var(--text);
+    background: #fff;
+    min-width: 190px;
+  }
+  .pill-btn {
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .pill-btn.active {
+    background: var(--forest);
+    color: #fff;
+    border-color: var(--forest);
+  }
+  .view-tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--bg);
+    padding: 4px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+  }
+  .tab-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: #fff;
+    color: var(--forest);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  /* Person Highlight Banner */
+  .person-summary {
+    display: none;
+    background: #eef6ff;
+    border: 1px solid #b6d4fe;
+    color: #0f3b7a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 0.9rem;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .person-summary.visible { display: flex; }
+
+  /* Cards Grid */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+  }
+  @media (max-width: 660px) {
+    .days-grid { grid-template-columns: 1fr; }
+  }
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .day-header {
+    background: #f1f5f2;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .day-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--forest);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .turn-num {
+    background: var(--forest);
+    color: #fff;
+    font-size: 0.74rem;
+    padding: 2px 7px;
+    border-radius: 6px;
+  }
+  .day-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag-sibling {
+    background: var(--link-bg);
+    color: var(--link-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid #c5d9fc;
+  }
+  .tag-time {
+    background: #e9ecef;
+    color: #343a40;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .animals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  @media (max-width: 540px) {
+    .animals-grid { grid-template-columns: 1fr; }
+  }
+  .animal-box {
+    border-radius: 9px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+  }
+  .animal-box.macaco { background: var(--macaco-bg); border-color: var(--macaco-border); }
+  .animal-box.sapo { background: var(--sapo-bg); border-color: var(--sapo-border); }
+  .animal-box.tatu { background: var(--tatu-bg); border-color: var(--tatu-border); }
+  .animal-box.onca { background: var(--onca-bg); border-color: var(--onca-border); }
+
+  .animal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .animal-name {
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .macaco .animal-name { color: var(--macaco-accent); }
+  .sapo .animal-name { color: var(--sapo-accent); }
+  .tatu .animal-name { color: var(--tatu-accent); }
+  .onca .animal-name { color: var(--onca-accent); }
+
+  .cap-badge {
+    font-size: 0.71rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.85);
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.12);
+    color: var(--text);
+  }
+
+  .sub-section {
+    margin-top: 6px;
+  }
+  .sub-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .chip {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.14);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .chip strong { font-weight: 600; }
+  .chip .meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .chip.linked {
+    background: #edf4ff;
+    border-color: #93bbfc;
+  }
+  .chip.highlighted {
+    background: #ffe082 !important;
+    border-color: #d98200 !important;
+    box-shadow: 0 0 0 2px rgba(217,130,0,0.25);
+  }
+  .chip.vaga {
+    background: var(--vaga-bg);
+    border: 1px dashed #98a2b3;
+    color: var(--vaga-text);
+    font-size: 0.74rem;
+  }
+
+  /* Table View */
+  .table-wrap {
+    display: none;
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: var(--shadow);
+  }
+  .table-wrap.active { display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  th {
+    background: var(--forest);
+    color: #fff;
+    text-align: left;
+    padding: 10px 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+  td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #fafcfa; }
+  .tbl-pill {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #d0d7d0;
+    border-radius: 5px;
+    padding: 1px 6px;
+    margin: 1px 2px;
+    font-size: 0.77rem;
+  }
+  .tbl-pill.lnk { background: #e8f1ff; border-color: #9bbcf7; font-weight: 600; }
+  .tbl-vaga {
+    display: inline-block;
+    color: #667085;
+    font-style: italic;
+    font-size: 0.74rem;
+    margin-top: 2px;
+  }
+
+  /* Stats View */
+  .stats-wrap {
+    display: none;
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .stats-wrap.active { display: block; }
+
+  .hidden { display: none !important; }
+
+  @media print {
+    header { background: #1e4d2b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .controls, .btn-print { display: none !important; }
+    .days-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .day-card { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-top">
+      <div>
+        <span class="badge-version">VERSÃO 3.0 • ESCALA FINAL CONSOLIDADA</span>
+        <h1>SDN na Floresta Encantada — Escala de Apresentações</h1>
+        <p class="subtitle">11/12 a 27/12 (22 turnos) • Filtrada pela lista oficial com tetos por grupo, duplas de fantasia e vínculos de irmãos</p>
+      </div>
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-val">22 Turnos</div>
+        <div class="kpi-lbl">11/12 a 27/12 (17h e 20h)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val">Tetos 100% Atendidos</div>
+        <div class="kpi-lbl">Sapo 2/2/2 • Tatu 2 • Macaco 4/2/2 • Onça 4/2</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val">3 Vínculos 🔗</div>
+        <div class="kpi-lbl">Isaque↔Pietra • Ezequiel↔Josué • Rogério↔Roger</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val">Onças 🐆</div>
+        <div class="kpi-lbl">Laura e Flávia sempre juntas às Onças Crianças</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Regras Implícitas Aplicadas -->
+  <section class="rules-bar">
+    <div class="rules-header" onclick="toggleRules()">
+      <h2>📋 Regras de Negócio Implícitas Aplicadas nesta Escala</h2>
+      <span id="rulesToggleIcon" style="font-size:0.82rem;color:var(--text-muted);font-weight:600;">Ocultar ▲</span>
+    </div>
+    <div class="rules-grid" id="rulesGrid">
+      <div class="rule-box">
+        <strong>1. Teto Máximo por Apresentação</strong>
+        <ul>
+          <li><b>Sapo 🐸:</b> máx. 2 Jovens/Teens, 2 Kids, 2 Infantil.</li>
+          <li><b>Tatu 🦔:</b> máx. 2 Jovens.</li>
+          <li><b>Macaco 🐒:</b> máx. 4 Jovens/Teens, 2 Kids, 2 Infantil.</li>
+          <li><b>Onça 🐆:</b> máx. 4 Jovens, 2 Kids/Crianças.</li>
+        </ul>
+      </div>
+      <div class="rule-box">
+        <strong>2. Divisão de Fantasias (Duplas)</strong>
+        <ul>
+          <li><b>Macaco:</b> Miguel Guedes/Vinícius (11/11), Jefferson/Ícaro (11/11), Rogério/Jamal (12/10), Yan/Isaac.</li>
+          <li><b>Tatu:</b> Miguel Moreira/Marcelo (10/12).</li>
+          <li><b>Onça:</b> Fernando/Miguel Henrique (10/10, resp. 18/11), Melque/Jhonathan.</li>
+          <li><b>Kids/Infantil:</b> Arthur/Murilo (11/11), Pedrinho/Uriel (14/8), Antonella/Davizinho (11/11), Isaque/Ezequiel (12/6), Wilson/Gabriel (11/11).</li>
+        </ul>
+      </div>
+      <div class="rule-box">
+        <strong>3. Vínculos Obrigatórios (Irmãos & Onças)</strong>
+        <ul>
+          <li><b>Isaque ↔ Pietra:</b> escalados juntos nos 12 turnos em comum.</li>
+          <li><b>Ezequiel ↔ Josué Calebe:</b> escalados juntos nos 6 turnos disponíveis.</li>
+          <li><b>Rogério ↔ Roger:</b> escalados juntos nos 12 turnos de Rogério.</li>
+          <li><b>Laura & Flávia:</b> revezam (6/6) exclusivamente nos 12 dias de Pietra.</li>
+        </ul>
+      </div>
+      <div class="rule-box">
+        <strong>4. Descanso dos Solos & Pendentes</strong>
+        <ul>
+          <li>Solos (Arthur C., Hélio, Charles, Miguel Kids, Ester) têm folgas distribuídas sem violar os tetos.</li>
+          <li>Os 12 nomes sem resposta permanecem como <b>vagas reservadas</b> já contabilizadas dentro do limite máximo.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros e Modos de Visualização -->
+  <section class="controls">
+    <div class="filter-group">
+      <select id="personFilter" onchange="applyFilters()">
+        <option value="">👤 Filtrar por integrante (todos)...</option>
+      </select>
+
+      <button class="pill-btn active" data-filter="all" onclick="setQuickFilter('all', this)">Todos (22)</button>
+      <button class="pill-btn" data-filter="siblings" onclick="setQuickFilter('siblings', this)">🔗 Com Irmãos</button>
+      <button class="pill-btn" data-filter="17h" onclick="setQuickFilter('17h', this)">🕔 1º Horário (17h)</button>
+      <button class="pill-btn" data-filter="20h" onclick="setQuickFilter('20h', this)">🌙 2º Horário / Noite (20h)</button>
+    </div>
+
+    <div class="view-tabs">
+      <button class="tab-btn active" onclick="switchView('cards', this)">🗂️ Cartões por Dia</button>
+      <button class="tab-btn" onclick="switchView('table', this)">📊 Tabela Geral</button>
+      <button class="tab-btn" onclick="switchView('stats', this)">📈 Resumo Individual</button>
+    </div>
+  </section>
+
+  <div id="personSummary" class="person-summary">
+    <div id="personSummaryText"></div>
+    <button class="pill-btn" onclick="clearPersonFilter()">Limpar filtro ✕</button>
+  </div>
+
+  <!-- View 1: Cards -->
+  <main id="cardsView" class="days-grid"></main>
+
+  <!-- View 2: Table -->
+  <section id="tableView" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data / Horário</th>
+          <th>Macaco 🐒 (J/T) [máx 4]</th>
+          <th>Sapo 🐸 (J/T) [máx 2]</th>
+          <th>Tatu 🦔 (J) [máx 2]</th>
+          <th>Onça 🐆 (J) [máx 4]</th>
+          <th>Macacos 🐒 (Kids / Inf) [máx 2/2]</th>
+          <th>Sapos 🐸 (Kids / Inf) [máx 2/2]</th>
+          <th>Onças 🐆 (Crianças) [máx 2]</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </section>
+
+  <!-- View 3: Individual Stats -->
+  <section id="statsView" class="stats-wrap">
+    <h3 style="margin-bottom:12px;color:var(--forest);font-size:1.05rem;">Balanço Individual de Apresentações e Folgas (Total: 22 Turnos)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Grupo</th>
+          <th>Integrante</th>
+          <th>Categoria</th>
+          <th>Regra / Vínculo</th>
+          <th>Apresentações</th>
+          <th>Folgas</th>
+        </tr>
+      </thead>
+      <tbody id="statsBody"></tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+const SCHEDULE = [{"index": 1, "slot": "11/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 2, "slot": "12/12 (1º horário) - 17h", "is_17h": true, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}, {"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 3, "slot": "12/12 (2º horário) - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 4, "slot": "13/12 (1º horário) - 17h", "is_17h": true, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 5, "slot": "13/12 (2º horário) - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 6, "slot": "14/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Jamal (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}, {"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 7, "slot": "15/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 8, "slot": "16/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Jamal (dupla)"], "sapo_jt": [{"name": "Josué Calebe", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Ezequiel"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Ezequiel", "sub": "Kids", "rule": "Dupla c/ Isaque", "link": "Irmão: Josué Calebe"}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}, {"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 9, "slot": "17/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 10, "slot": "18/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 11, "slot": "19/12 (1º horário) - 17h", "is_17h": true, "has_siblings": false, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [], "sapo_jt_vagas": ["Vaga Calebe / Pedro (solos)"], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 12, "slot": "19/12 (2º horário) - 20h", "is_17h": false, "has_siblings": false, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [], "sapo_jt_vagas": ["Vaga Calebe / Pedro (solos)"], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)", "Vaga Jheovana (solo)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 13, "slot": "20/12 (1º horário) - 17h", "is_17h": true, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}, {"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 14, "slot": "20/12 (2º horário) - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 15, "slot": "21/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Arthur (Kids)", "sub": "Kids", "rule": "Dupla c/ Murilo", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}, {"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 16, "slot": "22/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": ["Vaga Melque / Jhonathan (dupla)"], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 17, "slot": "23/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}], "mac_i": [{"name": "Uriel", "sub": "Infantil", "rule": "Dupla c/ Pedrinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}, {"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 18, "slot": "25/12 - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Laura", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 19, "slot": "26/12 (1º horário) - 17h", "is_17h": true, "has_siblings": false, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [], "sapo_jt_vagas": ["Vaga Calebe / Pedro (solos)"], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 20, "slot": "26/12 (2º horário) - 20h", "is_17h": false, "has_siblings": false, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}], "mac_jt_vagas": ["Vaga Jamal (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [], "sapo_jt_vagas": ["Vaga Calebe / Pedro (solos)"], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [], "onca_j_vagas": ["Vaga Melque / Jhonathan (dupla)"], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [], "sapo_i": [], "sapo_i_vagas": ["Vaga Gabriel (dupla)", "Vaga Jheovana (solo)"], "onca_k": [], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 21, "slot": "27/12 (1º horário) - 17h", "is_17h": true, "has_siblings": true, "mac_jt": [{"name": "Miguel Guedes", "sub": "Jovens/Teens", "rule": "Dupla c/ Vinícius", "link": null}, {"name": "Jefferson", "sub": "Jovens", "rule": "Dupla c/ Ícaro Mateus", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}, {"name": "Arthur Cavalcante", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}], "mac_jt_vagas": [], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Miguel Moreira", "sub": "Jovens", "rule": "Dupla c/ Marcelo", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Fernando", "sub": "Jovens", "rule": "Dupla c/ Miguel Henrique", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Antonella", "sub": "Infantil", "rule": "Dupla c/ Davizinho", "link": null}, {"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": [], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}, {"name": "Miguel (Kids)", "sub": "Kids", "rule": "Solo (revezamento)", "link": null}], "sapo_i": [{"name": "Ester", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "sapo_i_vagas": ["Vaga Gabriel (dupla)"], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}, {"index": 22, "slot": "27/12 (2º horário) - 20h", "is_17h": false, "has_siblings": true, "mac_jt": [{"name": "Vinícius", "sub": "Jovens", "rule": "Dupla c/ Miguel Guedes", "link": null}, {"name": "Rogério", "sub": "Jovens", "rule": "Dupla c/ Jamal", "link": "Irmão: Roger"}], "mac_jt_vagas": ["Vaga Ícaro Mateus (dupla)", "Vaga Yan / Isaac Santos (dupla)"], "sapo_jt": [{"name": "Roger", "sub": "Teens", "rule": "Solo (revezamento)", "link": "Irmão: Rogério"}], "sapo_jt_vagas": [], "tatu_j": [{"name": "Marcelo", "sub": "Jovens", "rule": "Dupla c/ Miguel Moreira", "link": null}], "tatu_j_vagas": ["Vaga Arthur de Jesus (solo)"], "onca_j": [{"name": "Miguel Henrique", "sub": "Teens", "rule": "Dupla c/ Fernando", "link": null}, {"name": "Hélio", "sub": "Jovens", "rule": "Solo (revezamento)", "link": null}, {"name": "Flávia", "sub": "Jovens", "rule": "Onça Mulher", "link": "Acompanha Pietra"}], "onca_j_vagas": [], "mac_k": [{"name": "Murilo", "sub": "Kids", "rule": "Dupla c/ Arthur", "link": null}, {"name": "Pedrinho", "sub": "Kids", "rule": "Dupla c/ Uriel", "link": null}], "mac_i": [{"name": "Charles", "sub": "Infantil", "rule": "Solo (revezamento)", "link": null}], "mac_i_vagas": ["Vaga Davizinho (dupla)"], "sapo_k": [{"name": "Isaque", "sub": "Kids", "rule": "Dupla c/ Ezequiel", "link": "Irmã: Pietra"}], "sapo_i": [{"name": "Wilson", "sub": "Infantil", "rule": "Dupla c/ Gabriel", "link": null}], "sapo_i_vagas": [], "onca_k": [{"name": "Pietra", "sub": "Infantil/Kids", "rule": "Solo", "link": "Irmão: Isaque + Onça Mulher"}], "onca_k_vagas": ["Vaga Ana Júlia (solo)"]}];
+const STATS = [{"name": "Antonella", "group": "Macaco 🐒", "subcat": "Infantil", "role": "Dupla c/ Davizinho", "count": 11}, {"name": "Charles", "group": "Macaco 🐒", "subcat": "Infantil", "role": "Solo (revezamento)", "count": 18}, {"name": "Uriel", "group": "Macaco 🐒", "subcat": "Infantil", "role": "Dupla c/ Pedrinho", "count": 8}, {"name": "Arthur Cavalcante", "group": "Macaco 🐒", "subcat": "Jovens", "role": "Solo (revezamento)", "count": 8}, {"name": "Jefferson", "group": "Macaco 🐒", "subcat": "Jovens", "role": "Dupla c/ Ícaro Mateus", "count": 11}, {"name": "Rogério", "group": "Macaco 🐒", "subcat": "Jovens", "role": "Dupla c/ Jamal • Irmão de Roger", "count": 12}, {"name": "Vinícius", "group": "Macaco 🐒", "subcat": "Jovens", "role": "Dupla c/ Miguel Guedes", "count": 11}, {"name": "Miguel Guedes", "group": "Macaco 🐒", "subcat": "Jovens/Teens", "role": "Dupla c/ Vinícius", "count": 11}, {"name": "Arthur (Kids)", "group": "Macaco 🐒", "subcat": "Kids", "role": "Dupla c/ Murilo", "count": 11}, {"name": "Murilo", "group": "Macaco 🐒", "subcat": "Kids", "role": "Dupla c/ Arthur", "count": 11}, {"name": "Pedrinho", "group": "Macaco 🐒", "subcat": "Kids", "role": "Dupla c/ Uriel", "count": 14}, {"name": "Fernando", "group": "Onça 🐆", "subcat": "Jovens", "role": "Dupla c/ Miguel Henrique", "count": 10}, {"name": "Flávia", "group": "Onça 🐆", "subcat": "Jovens", "role": "Onça Mulher (com Onças Crianças)", "count": 6}, {"name": "Hélio", "group": "Onça 🐆", "subcat": "Jovens", "role": "Solo (revezamento)", "count": 11}, {"name": "Laura", "group": "Onça 🐆", "subcat": "Jovens", "role": "Onça Mulher (com Onças Crianças)", "count": 6}, {"name": "Pietra", "group": "Onça 🐆", "subcat": "Kids/Infantil", "role": "Solo • Irmã de Isaque + Onça Mulher", "count": 12}, {"name": "Miguel Henrique", "group": "Onça 🐆", "subcat": "Teens", "role": "Dupla c/ Fernando", "count": 10}, {"name": "Ester", "group": "Sapo 🐸", "subcat": "Infantil", "role": "Solo (revezamento)", "count": 7}, {"name": "Wilson", "group": "Sapo 🐸", "subcat": "Infantil", "role": "Dupla c/ Gabriel", "count": 11}, {"name": "Ezequiel", "group": "Sapo 🐸", "subcat": "Kids", "role": "Dupla c/ Isaque • Irmão de Josué Calebe", "count": 6}, {"name": "Isaque", "group": "Sapo 🐸", "subcat": "Kids", "role": "Dupla c/ Ezequiel • Irmão de Pietra", "count": 12}, {"name": "Miguel (Kids)", "group": "Sapo 🐸", "subcat": "Kids", "role": "Solo (revezamento)", "count": 7}, {"name": "Josué Calebe", "group": "Sapo 🐸", "subcat": "Teens", "role": "Solo • Irmão de Ezequiel", "count": 6}, {"name": "Roger", "group": "Sapo 🐸", "subcat": "Teens", "role": "Solo • Irmão de Rogério", "count": 12}, {"name": "Marcelo", "group": "Tatu 🦔", "subcat": "Jovens", "role": "Dupla c/ Miguel Moreira", "count": 12}, {"name": "Miguel Moreira", "group": "Tatu 🦔", "subcat": "Jovens", "role": "Dupla c/ Marcelo", "count": 10}];
+
+let currentQuickFilter = 'all';
+let currentPerson = '';
+
+function init() {
+  // Populate person dropdown
+  const select = document.getElementById('personFilter');
+  const sortedNames = [...STATS].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  sortedNames.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = `${p.name} (${p.group} • ${p.count}x)`;
+    select.appendChild(opt);
+  });
+
+  renderCards();
+  renderTable();
+  renderStats();
+}
+
+function toggleRules() {
+  const grid = document.getElementById('rulesGrid');
+  const icon = document.getElementById('rulesToggleIcon');
+  const hidden = grid.classList.toggle('hidden');
+  icon.textContent = hidden ? 'Mostrar ▼' : 'Ocultar ▲';
+}
+
+function setQuickFilter(filter, btn) {
+  currentQuickFilter = filter;
+  document.querySelectorAll('.controls .pill-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function clearPersonFilter() {
+  document.getElementById('personFilter').value = '';
+  applyFilters();
+}
+
+function switchView(view, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cardsView').classList.toggle('hidden', view !== 'cards');
+  document.getElementById('tableView').classList.toggle('active', view === 'table');
+  document.getElementById('statsView').classList.toggle('active', view === 'stats');
+}
+
+function renderChips(list, vagas = []) {
+  let html = '';
+  list.forEach(p => {
+    const isLinked = Boolean(p.link);
+    const isHighlighted = currentPerson && p.name === currentPerson;
+    html += `<span class="chip ${isLinked ? 'linked' : ''} ${isHighlighted ? 'highlighted' : ''}" title="${p.rule}${p.link ? ' • ' + p.link : ''}">
+      <strong>${p.name}</strong>
+      <span class="meta">${p.link ? '🔗 ' + p.link : p.rule}</span>
+    </span>`;
+  });
+  vagas.forEach(v => {
+    html += `<span class="chip vaga">${v}</span>`;
+  });
+  return html || '<span class="chip vaga">Sem escalados</span>';
+}
+
+function slotMatchesPerson(d, person) {
+  if (!person) return true;
+  const all = [
+    ...d.mac_jt, ...d.sapo_jt, ...d.tatu_j, ...d.onca_j,
+    ...d.mac_k, ...d.mac_i, ...d.sapo_k, ...d.sapo_i, ...d.onca_k
+  ];
+  return all.some(p => p.name === person);
+}
+
+function slotMatchesQuickFilter(d) {
+  if (currentQuickFilter === 'siblings') return d.has_siblings;
+  if (currentQuickFilter === '17h') return d.is_17h;
+  if (currentQuickFilter === '20h') return !d.is_17h;
+  return true;
+}
+
+function applyFilters() {
+  currentPerson = document.getElementById('personFilter').value;
+  const summary = document.getElementById('personSummary');
+  if (currentPerson) {
+    const st = STATS.find(s => s.name === currentPerson);
+    document.getElementById('personSummaryText').innerHTML =
+      `Exibindo turnos de <strong>${st.name}</strong> (${st.group} — ${st.role}): <strong>${st.count} apresentações</strong> e <strong>${22 - st.count} folgas</strong>.`;
+    summary.classList.add('visible');
+  } else {
+    summary.classList.remove('visible');
+  }
+  renderCards();
+  renderTable();
+}
+
+function renderCards() {
+  const container = document.getElementById('cardsView');
+  const filtered = SCHEDULE.filter(d => slotMatchesPerson(d, currentPerson) && slotMatchesQuickFilter(d));
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="padding:24px;background:#fff;border-radius:12px;border:1px solid var(--border);color:var(--text-muted);">Nenhum horário encontrado para os filtros selecionados.</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(d => `
+    <article class="day-card">
+      <div class="day-header">
+        <div class="day-title">
+          <span class="turn-num">#${String(d.index).padStart(2, '0')}</span>
+          <span>${d.slot}</span>
+        </div>
+        <div class="day-tags">
+          ${d.has_siblings ? '<span class="tag-sibling">🔗 Irmãos Escalados</span>' : ''}
+          <span class="tag-time">${d.is_17h ? '1º Horário • 17h' : 'Noite • 20h'}</span>
+        </div>
+      </div>
+
+      <div class="animals-grid">
+        <!-- MACACO -->
+        <div class="animal-box macaco">
+          <div class="animal-head">
+            <span class="animal-name">🐒 Macaco</span>
+            <span class="cap-badge">${d.mac_jt.length}/4 J • ${d.mac_k.length}/2 K • ${d.mac_i.length}/2 I</span>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Jovens / Teens</div>
+            <div class="chip-list">${renderChips(d.mac_jt, d.mac_jt_vagas)}</div>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Kids & Infantil</div>
+            <div class="chip-list">${renderChips([...d.mac_k, ...d.mac_i], d.mac_i_vagas)}</div>
+          </div>
+        </div>
+
+        <!-- SAPO -->
+        <div class="animal-box sapo">
+          <div class="animal-head">
+            <span class="animal-name">🐸 Sapo</span>
+            <span class="cap-badge">${d.sapo_jt.length}/2 J • ${d.sapo_k.length}/2 K • ${d.sapo_i.length}/2 I</span>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Jovens / Teens</div>
+            <div class="chip-list">${renderChips(d.sapo_jt, d.sapo_jt_vagas)}</div>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Kids & Infantil</div>
+            <div class="chip-list">${renderChips([...d.sapo_k, ...d.sapo_i], d.sapo_i_vagas)}</div>
+          </div>
+        </div>
+
+        <!-- ONÇA -->
+        <div class="animal-box onca">
+          <div class="animal-head">
+            <span class="animal-name">🐆 Onça</span>
+            <span class="cap-badge">${d.onca_j.length}/4 J • ${d.onca_k.length}/2 K</span>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Jovens / Teens</div>
+            <div class="chip-list">${renderChips(d.onca_j, d.onca_j_vagas)}</div>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Onças Crianças</div>
+            <div class="chip-list">${renderChips(d.onca_k, d.onca_k_vagas)}</div>
+          </div>
+        </div>
+
+        <!-- TATU -->
+        <div class="animal-box tatu">
+          <div class="animal-head">
+            <span class="animal-name">🦔 Tatu</span>
+            <span class="cap-badge">${d.tatu_j.length}/2 J</span>
+          </div>
+          <div class="sub-section">
+            <div class="sub-label">Jovens / Teens</div>
+            <div class="chip-list">${renderChips(d.tatu_j, d.tatu_j_vagas)}</div>
+          </div>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+function formatCell(list, vagas = []) {
+  const items = list.map(p => `<span class="tbl-pill ${p.link ? 'lnk' : ''}">${p.name}${p.link ? ' 🔗' : ''}</span>`).join(' ');
+  const v = vagas.length ? `<div class="tbl-vaga">${vagas.join(' • ')}</div>` : '';
+  return (items || '<span class="tbl-vaga">—</span>') + v;
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const filtered = SCHEDULE.filter(d => slotMatchesPerson(d, currentPerson) && slotMatchesQuickFilter(d));
+  tbody.innerHTML = filtered.map(d => `
+    <tr>
+      <td><strong>${d.index}</strong></td>
+      <td style="white-space:nowrap;"><strong>${d.slot}</strong></td>
+      <td>${formatCell(d.mac_jt, d.mac_jt_vagas)}</td>
+      <td>${formatCell(d.sapo_jt, d.sapo_jt_vagas)}</td>
+      <td>${formatCell(d.tatu_j, d.tatu_j_vagas)}</td>
+      <td>${formatCell(d.onca_j, d.onca_j_vagas)}</td>
+      <td>${formatCell([...d.mac_k, ...d.mac_i], d.mac_i_vagas)}</td>
+      <td>${formatCell([...d.sapo_k, ...d.sapo_i], d.sapo_i_vagas)}</td>
+      <td>${formatCell(d.onca_k, d.onca_k_vagas)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderStats() {
+  const tbody = document.getElementById('statsBody');
+  tbody.innerHTML = STATS.map(s => `
+    <tr>
+      <td><strong>${s.group}</strong></td>
+      <td><strong>${s.name}</strong></td>
+      <td>${s.subcat}</td>
+      <td>${s.role}</td>
+      <td><span class="tbl-pill lnk">${s.count} turnos</span></td>
+      <td>${22 - s.count} folgas</td>
+    </tr>
+  `).join('');
+}
+
+init();
+</script>
+</body>
+</html>
